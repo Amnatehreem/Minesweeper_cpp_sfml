@@ -27,11 +27,10 @@ void getrand(int m, int n, vector<int> &randNum)
 	}
 }
 
-void TileMap::Generate()
+void TileMap::Generate(vector<int> *map)
 {
 	try
 	{
-
 		// allocate a 2D vector of tiles
 		if (tilesptr == nullptr)
 
@@ -39,10 +38,24 @@ void TileMap::Generate()
 
 		// Find location of n_bombs random bombs in the map
 		vector <int> bombs(n_bombs);
-		getrand(n_bombs, width * height, bombs);
+
+		if (map == nullptr)
+		{
+			getrand(n_bombs, width * height, bombs);
+		}
+		else
+		{
+			bombs = *map;
+		}
+
+		// reset all tiles
+		for (int i = 0; i < height; i++)
+			for (int j = 0; j < width; j++)
+				tiles[i][j].reset();
+
 
 		// Mark the location of bombs in the tiles
-		for (int i = 0; i < n_bombs; i++)
+		for (int i = 0; i < bombs.size(); i++)
 		{
 			int x = bombs[i] / width;
 			int y = bombs[i] % width;

@@ -32,6 +32,13 @@ public:
 	 int tile_x = 0;
 	 int tile_y = 0;
 
+	 void reset()
+	 {
+		 state = TileState::hidden;
+		 prevState = TileState::hidden;
+		 tile = Tilename::zero;
+	 }
+
 };
 
  class TileMap
@@ -47,12 +54,13 @@ public:
 		 this->width = width;
 		 this->n_bombs = n_bombs;
 	 }
-	 void Generate();
+
+	 void Generate(std::vector<int> *map = nullptr);
+
 	 std::vector<std::vector<Tile>>* getTileMap();
 	 ~TileMap()
 	 {
 		 //delete tiles;
 	 }
-
  };
 

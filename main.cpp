@@ -10,6 +10,7 @@
 
 using namespace std;
 void readConfig(unsigned int &width, unsigned int &height, unsigned int &bombs);
+void loadTest(string filename, vector<int> &bombs);
 
 int main()
 {
@@ -62,7 +63,6 @@ int main()
 						{
 							board.Reset();
 							map.Generate();
-							tilesptr = map.getTileMap();
 							break;
 						}
 						case LeftClickAction::ToggleDebug:
@@ -74,18 +74,34 @@ int main()
 						case LeftClickAction::LoadTest1:
 						{
 							cout << "load test 1" << endl;
+							board.Reset();
+							vector<int> bombs;
+							loadTest("testboard1.brd", bombs);
+							map.Generate(&bombs);
 							break;
 
 						}
 						case LeftClickAction::LoadTest2:
 						{
 							cout << "load test2" << endl;
+							board.Reset();
+
+							vector<int> bombs;
+							loadTest("testboard2.brd", bombs);
+							map.Generate(&bombs);
+
 							break;
 
 						}
 						case LeftClickAction::LoadTest3:
 						{
 							cout << "load test3" << endl;
+							board.Reset();
+
+							vector<int> bombs;
+							loadTest("testboard3.brd", bombs);
+							map.Generate(&bombs);
+
 							break;
 						}
 						}
@@ -120,16 +136,28 @@ void readConfig(unsigned int &width, unsigned int &height, unsigned int &bombs)
 	bombs = stoi(line);
 }
 
-void loadTest(string filename)
+void loadTest(string filename, vector<int> &bombs)
 {
 	std::ifstream file("boards/" + filename);
-
+	char isbomb;
+	string line;
+	unsigned int index = 0;
+	// read file character by character
 	for (int i = 0; i < 16; i++)
 	{
 		for (int j = 0; j < 25; j++)
 		{
-
+			file.get(isbomb);
+			if (isbomb == '1')
+			{
+				bombs.push_back(index);
+				cout << index << " " ;
+			}
+			index++;
 		}
+		
+		// get line so that we move to next line
+		getline(file, line);
+		cout << endl;
 	}
-	
 }
