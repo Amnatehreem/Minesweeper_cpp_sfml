@@ -27,25 +27,25 @@ void getrand(int m, int n, vector<int> &randNum)
 	}
 }
 
-TileMap::TileMap(int width, int height, int n_mines)
+void TileMap::Generate()
 {
 	try
 	{
-		this->height = height;
-		this->width = width;
 
 		// allocate a 2D vector of tiles
-		tilesptr = new vector<vector<Tile>>(height, vector<Tile>(width));
+		if (tilesptr == nullptr)
 
-		// Find location of n_mines random bombs in the map
-		vector <int> mines(n_mines);
-		getrand(n_mines, width * height, mines);
+			tilesptr = new vector<vector<Tile>>(height, vector<Tile>(width));
+
+		// Find location of n_bombs random bombs in the map
+		vector <int> bombs(n_bombs);
+		getrand(n_bombs, width * height, bombs);
 
 		// Mark the location of bombs in the tiles
-		for (int i = 0; i < n_mines; i++)
+		for (int i = 0; i < n_bombs; i++)
 		{
-			int x = mines[i] / width;
-			int y = mines[i] % width;
+			int x = bombs[i] / width;
+			int y = bombs[i] % width;
 			tiles[x][y].tile = Tilename::bomb;
 		}
 
@@ -54,6 +54,8 @@ TileMap::TileMap(int width, int height, int n_mines)
 		{
 			for (int j = 0; j < width; j++)
 			{
+				tiles[i][j].state = TileState::hidden;
+
 				if (tiles[i][j].tile != Tilename::bomb)
 				{
 					tiles[i][j].tile = bombsAround(i, j);

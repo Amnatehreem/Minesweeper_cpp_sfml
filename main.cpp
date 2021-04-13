@@ -1,4 +1,5 @@
 #include <SFML/Graphics.hpp>
+#include <fstream>
 #include <algorithm>
 #include <iostream>
 #include <string>
@@ -8,20 +9,20 @@
 #define TILESIZE 32
 
 using namespace std;
+void readConfig(unsigned int &width, unsigned int &height, unsigned int &bombs);
 
 int main()
 {
-	int width = 22;
-	int height = 8;
-	int mines = 50;
 
-	//Board width is max of game tiles width and width for the buttons under the main game board
+	unsigned int width, height, bombs;
+	readConfig(width, height, bombs);
 
 	// create the window
-	sf::RenderWindow window(sf::VideoMode(width * TILESIZE, height * TILESIZE + 64), "MineSweeper");
+	sf::RenderWindow window(sf::VideoMode(width * TILESIZE, height * TILESIZE + 88), "MineSweeper");
 
 	// create the tilemap
-	TileMap map(width, height, mines);
+	TileMap map(width, height, bombs);
+	map.Generate();
 	vector<vector<Tile>>* tilesptr = map.getTileMap();
 
 	Board board(sf::Vector2u(TILESIZE, TILESIZE), width, height, tilesptr);
@@ -59,12 +60,14 @@ int main()
 						{
 						case LeftClickAction::ResetGame:
 						{
-							cout << "resetting game";
+							board.Reset();
+							map.Generate();
+							tilesptr = map.getTileMap();
 							break;
 						}
 						case LeftClickAction::ToggleDebug:
 						{
-							cout << "enable debug" << endl;
+							board.ToggleDebugMode();
 							break;
 
 						}
@@ -101,4 +104,32 @@ int main()
 	}
 
 	return 0;
+}
+
+void readConfig(unsigned int &width, unsigned int &height, unsigned int &bombs)
+{
+	std::ifstream file("boards/config.cfg");
+	string line;
+	getline(file, line);
+	width = stoi(line);
+
+	getline(file, line);
+	height = stoi(line);
+
+	getline(file, line);
+	bombs = stoi(line);
+}
+
+void loadTest(string filename)
+{
+	std::ifstream file("boards/" + filename);
+
+	for (int i = 0; i < 16; i++)
+	{
+		for (int j = 0; j < 25; j++)
+		{
+
+		}
+	}
+	
 }

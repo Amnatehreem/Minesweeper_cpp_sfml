@@ -10,12 +10,15 @@ class Board : public sf::Drawable, public sf::Transformable
 	unsigned int width, height;
 	sf::Vector2u tileSize;
 	std::vector<std::vector<Tile>> *tilesptr;
+	bool debugmode = false;
 
 public:
 	bool load(const std::string& tileset);
 	void changeTile(int x, int y, Tilename tile);
 	void processLeftClick(int ypos, int xpos);
 	void processRightClick(int ypos, int xpos);
+	void Reset();
+	void ToggleDebugMode();
 
 	Board(sf::Vector2u tSize, unsigned int width, unsigned int height, std::vector<std::vector<Tile>> *tilesptr)
 	{
@@ -30,5 +33,6 @@ public:
 private:
 	virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const;
 	void revealTile(int x, int y);
+	void hideTile(int x, int y);
 	void revealiteratively(int x, int y);
 };

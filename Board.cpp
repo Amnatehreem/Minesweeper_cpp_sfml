@@ -10,6 +10,12 @@ bool Board::load(const std::string& tileset)
 	if (!m_tileset.loadFromFile(tileset))
 		return false;
 
+	Reset();
+	return true;
+}
+
+void Board::Reset()
+{
 	// resize the vertex array to fit the level size
 	m_vertices.setPrimitiveType(sf::Quads);
 	m_vertices.resize(width * height * 4);
@@ -33,8 +39,6 @@ bool Board::load(const std::string& tileset)
 			quad[2].texCoords = sf::Vector2f(tileSize.x, tileSize.y + 16);
 			quad[3].texCoords = sf::Vector2f(0, tileSize.y + 16);
 		}
-
-	return true;
 }
 
 void  Board::draw(sf::RenderTarget& target, sf::RenderStates states) const
@@ -71,7 +75,6 @@ void Board::processLeftClick(int ypos, int xpos)
 	}
 }
 
-int counti = 0;
 void Board::revealiteratively(int x, int y)
 {
 	Tile &tile = tiles[x][y];
@@ -80,10 +83,6 @@ void Board::revealiteratively(int x, int y)
 		revealTile(x, y);
 	}
 
-	if (counti++ >= 10)
-	{
-		//return;
-	}
 	if (tile.tile <= Tilename::zero && tile.state != TileState::flagged)
 	{
 
@@ -105,19 +104,29 @@ void Board::revealiteratively(int x, int y)
 			}
 		}
 	}
-	//cout << "return Reveal Iteratively:  " << x << " " << y << endl;
-
 }
 
 void Board::revealTile(int x, int y)
 {
-	//cout << "Revealing tile (" << x << "," << y << ")" << endl;
 	Tile &tile = tiles[x][y];
+
 	if (tile.state != TileState::flagged)
 	{
 		tile.state = TileState::revealed;
 		changeTile(x, y, tile.tile);
 	}
+}
+
+void Board::hideTile(int x, int y)
+{
+	Tile &tile = tiles[x][y];
+
+	/*if (x == 0 && y == 0)
+		cout << "hideTile::Revealing tile (" << x << "," << y << ")" << " prev State:" << (int)tile.prevState << endl;*/
+	tile.state = tile.prevState;
+	if (tile.state == TileState::hidden)
+		changeTile(x, y, Tilename::hidden);
+
 }
 
 void Board::changeTile(int x, int y, Tilename tile)
@@ -159,6 +168,35 @@ void Board::processRightClick(int ypos, int xpos)
 	catch (exception & ex)
 	{
 		cout << "Exception in processRightClick: " << ex.what() << endl;
+	}
+}
+
+void Board::ToggleDebugMode()
+{
+	debugmode = debugmode ? false : true;
+
+	// if bombs are hidden, reveal them and if revealed then hide them
+	for (unsigned int i = 0; i < height; ++i)
+	{
+		for (unsigned int j = 0; j < width; ++j)
+		{
+			if (tiles[i][j].tile == Tilename::bomb)
+			{
+				if (debugmode && tiles[i][j].state == TileState::revealed)
+				{
+					// This will not be used in practical scenario because the game will end if bomb is already revaealed
+					tiles[i][j].prevState = TileState::revealed;
+				}
+				else if (debugmode && tiles[i][j].state == TileState::hidden)
+				{
+					revealTile(i, j);
+				}
+				else if (!debugmode && tiles[i][j].state == TileState::revealed)
+				{
+					hideTile(i, j);
+				}
+			}
+		}
 	}
 }
 
