@@ -73,7 +73,6 @@ int main()
 						}
 						case LeftClickAction::LoadTest1:
 						{
-							cout << "load test 1" << endl;
 							board.Reset();
 							vector<int> bombs;
 							loadTest("testboard1.brd", bombs);
@@ -83,21 +82,16 @@ int main()
 						}
 						case LeftClickAction::LoadTest2:
 						{
-							cout << "load test2" << endl;
 							board.Reset();
-
 							vector<int> bombs;
 							loadTest("testboard2.brd", bombs);
 							map.Generate(&bombs);
-
 							break;
 
 						}
 						case LeftClickAction::LoadTest3:
 						{
-							cout << "load test3" << endl;
 							board.Reset();
-
 							vector<int> bombs;
 							loadTest("testboard3.brd", bombs);
 							map.Generate(&bombs);
@@ -151,7 +145,6 @@ void loadTest(string filename, vector<int> &bombs)
 			if (isbomb == '1')
 			{
 				bombs.push_back(index);
-				cout << index << " " ;
 			}
 			index++;
 		}
