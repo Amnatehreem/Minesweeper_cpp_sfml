@@ -46,7 +46,6 @@ void TileMap::Generate(vector<int> *map)
 		else
 		{
 			bombs = *map;
-			n_bombs = bombs.size();
 		}
 
 		// reset all tiles

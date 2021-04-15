@@ -31,6 +31,7 @@ public:
 	void decrement_bombs();
 	void Update_bombs(int n_bombs);
 	void reset(int bombs);
+	void setFace(bool win);
 
 	Buttons(unsigned int width, unsigned int _height_offset, int bombs)
 	{

@@ -13,6 +13,8 @@ using namespace std;
 #define DEBUG_OFFSET FACE_OFFSET + 64 * 3
 #define TEST_OFFSET DEBUG_OFFSET + 64
 #define BIGTILE_SIZE 64
+#define WINFACE_OFFSET FACE_OFFSET + 64 * 2
+#define LOSEFACE_OFFSET FACE_OFFSET + 64
 
 bool Buttons::load(const std::string& tileset)
 {
@@ -156,6 +158,15 @@ void Buttons::reset(int n_bombs)
 {
 	bombs = n_bombs;
 	Update_bombs(bombs);
+
+	// reset emoji texture
+	sf::Vertex* quad = &m_vertices[12];
+
+	// define its 4 texture coordinates
+	quad[0].texCoords = sf::Vector2f(FACE_OFFSET, 0);
+	quad[1].texCoords = sf::Vector2f(FACE_OFFSET + BIGTILE_SIZE, 0);
+	quad[2].texCoords = sf::Vector2f(FACE_OFFSET + BIGTILE_SIZE, BIGTILE_SIZE);
+	quad[3].texCoords = sf::Vector2f(FACE_OFFSET, BIGTILE_SIZE);
 }
 
 // This button will update the number of bombs displayed in the lower left corner
@@ -196,13 +207,27 @@ void Buttons::Update_bombs(int n_bombs)
 	}
 }
 
+// increment bombs counter
 void Buttons::increment_bombs()
 {
 	Update_bombs(++bombs);
 }
 
+// decrement bombs counter
 void Buttons::decrement_bombs()
 {
 	Update_bombs(--bombs);
 }
 
+// Update win/lose face
+void Buttons::setFace(bool win)
+{
+	sf::Vertex* quad = &m_vertices[12];
+	unsigned int offset = win ? WINFACE_OFFSET : LOSEFACE_OFFSET;
+
+	// define its 4 texture coordinates
+	quad[0].texCoords = sf::Vector2f(offset, 0);
+	quad[1].texCoords = sf::Vector2f(offset + BIGTILE_SIZE, 0);
+	quad[2].texCoords = sf::Vector2f(offset + BIGTILE_SIZE, BIGTILE_SIZE);
+	quad[3].texCoords = sf::Vector2f(offset, BIGTILE_SIZE);
+}

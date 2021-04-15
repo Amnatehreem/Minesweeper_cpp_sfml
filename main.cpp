@@ -87,14 +87,13 @@ int main()
 							board.Reset();
 							vector<int> _bombs;
 							loadTest(str, _bombs);
-							//bombs = _bombs.size();
 							map.Generate(&_bombs);
-							buttons.Update_bombs(_bombs.size());
+							buttons.reset(_bombs.size());
 
 							break;
 						}
 						}// end switch case
-					} 
+					} // end if (action != LeftClickAction::NoAction) 
 
 				}// end left click processing
 			} // end mouse clicked processing

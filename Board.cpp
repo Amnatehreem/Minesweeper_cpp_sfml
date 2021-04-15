@@ -69,6 +69,9 @@ void Board::processLeftClick(int ypos, int xpos)
 		if (x >= height)
 			return;
 
+		if (tiles[x][y].tile == Tilename::bomb)
+			buttons->setFace(false);
+
 		revealiteratively(x, y);
 	}
 	catch (exception &ex)
