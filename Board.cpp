@@ -12,12 +12,17 @@ bool Board::load(const std::string& tileset)
 	if (!m_tileset.loadFromFile(tileset))
 		return false;
 
-	Reset();
+	Reset(height*width - non_bomb_tiles);
 	return true;
 }
 
-void Board::Reset()
+void Board::Reset(int bombs)
 {
+	non_bomb_tiles = height * width - bombs;
+	playing = true;
+	revealed_tiles = 0;
+	debugmode = false;
+
 	// resize the vertex array to fit the level size
 	m_vertices.setPrimitiveType(sf::Quads);
 	m_vertices.resize(width * height * 4);
@@ -56,23 +61,40 @@ void  Board::draw(sf::RenderTarget& target, sf::RenderStates states) const
 }
 
 // Process left click: reveal a tile. reveal neighboring tiles that are not bombs
-// x = rows = height
-// y = columns = width
+// x = i = rows = height
+// y = j = columns = width
 void Board::processLeftClick(int ypos, int xpos)
 {
 	try
 	{
+		// if already won/lost then window should be stuck until reset
+		if (!playing)
+			return;
+
 		int x, y;
 		x = xpos / tileSize.x;
 		y = ypos / tileSize.y;
 
+		// check if the click is on the buttons panel
 		if (x >= height)
 			return;
 
-		if (tiles[x][y].tile == Tilename::bomb)
-			buttons->setFace(false);
-
+		// reveal the tiles iteratively
 		revealiteratively(x, y);
+
+		// if tile is a bomb then set losing face
+		if (tiles[x][y].tile == Tilename::bomb)
+		{
+			buttons->setFace(false);
+			playing = false;
+		}
+
+		// if all non bomb tiles are revealed then set win face
+		if (revealed_tiles == non_bomb_tiles)
+		{
+			buttons->setFace(true);
+			playing = false;
+		}
 	}
 	catch (exception &ex)
 	{
@@ -111,10 +133,16 @@ void Board::revealTile(int x, int y)
 {
 	Tile &tile = tiles[x][y];
 
+	if (tile.state == TileState::revealed)
+		return;
+
 	if (tile.state != TileState::flagged)
 	{
 		tile.state = TileState::revealed;
 		changeTile(x, y, tile.tile);
+
+		if (tile.tile != Tilename::bomb)
+			revealed_tiles++;
 	}
 }
 
@@ -122,8 +150,6 @@ void Board::hideTile(int x, int y)
 {
 	Tile &tile = tiles[x][y];
 
-	/*if (x == 0 && y == 0)
-		cout << "hideTile::Revealing tile (" << x << "," << y << ")" << " prev State:" << (int)tile.prevState << endl;*/
 	tile.state = tile.prevState;
 	if (tile.state == TileState::hidden)
 		changeTile(x, y, Tilename::hidden);

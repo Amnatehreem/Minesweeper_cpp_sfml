@@ -29,7 +29,7 @@ int main()
 	if (!buttons.load("images/m_merged.png"))
 		return -1;
 
-	Board board(sf::Vector2u(TILESIZE, TILESIZE), width, height, tilesptr, &buttons);
+	Board board(sf::Vector2u(TILESIZE, TILESIZE), width, height, bombs, tilesptr, &buttons);
 	if (!board.load("images/m_merged.png"))
 		return -1;
 
@@ -64,7 +64,7 @@ int main()
 						{
 						case LeftClickAction::ResetGame:
 						{
-							board.Reset();
+							board.Reset(bombs);
 							map.Generate();
 							buttons.reset(bombs);
 							break;
@@ -84,9 +84,11 @@ int main()
 								cout << "Please enter width = 25 and height = 16 in config file for test buttons to work" << endl;
 								break;
 							}
-							board.Reset();
+
+							// read file and get bombs. reset the game accordingly
 							vector<int> _bombs;
 							loadTest(str, _bombs);
+							board.Reset(_bombs.size());
 							map.Generate(&_bombs);
 							buttons.reset(_bombs.size());
 
@@ -144,6 +146,5 @@ void loadTest(string filename, vector<int> &bombs)
 		
 		// get line so that we move to next line
 		getline(file, line);
-		cout << endl;
 	}
 }
