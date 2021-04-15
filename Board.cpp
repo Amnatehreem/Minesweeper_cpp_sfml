@@ -1,6 +1,8 @@
 #include <SFML/Graphics.hpp>
+#include "Buttons.h"
 #include "Board.h"
 #include <iostream>
+
 using namespace std;
 #define tiles (*tilesptr)
 
@@ -85,8 +87,6 @@ void Board::revealiteratively(int x, int y)
 
 	if (tile.tile <= Tilename::zero && tile.state != TileState::flagged)
 	{
-
-		//cout << "Reveal Iteratively:  " << x << " " << y << "  tile name : " << (int)tile.tile << " tile state:   " << (int)tile.state << endl;
 		for (int i = x - 1; i <= x + 1; i++)
 		{
 			for (int j = y - 1; j <= y + 1; j++)
@@ -97,8 +97,6 @@ void Board::revealiteratively(int x, int y)
 				}
 				else if (!(i == x &&  j == y) && tiles[i][j].state != TileState::revealed)
 				{
-					//cout << "calling Revealing tile for (" << i << ", " << j << ") from (" << x << "," << y << ")" << endl;
-
 					revealiteratively(i, j);
 				}
 			}

@@ -20,7 +20,7 @@ public:
 	void Reset();
 	void ToggleDebugMode();
 
-	Board(sf::Vector2u tSize, unsigned int width, unsigned int height, std::vector<std::vector<Tile>> *tilesptr)
+	Board(sf::Vector2u tSize, unsigned int width, unsigned int height, std::vector<std::vector<Tile>> *tilesptr, Buttons &buttons)
 	{
 		this->width = width;
 		this->height = height;

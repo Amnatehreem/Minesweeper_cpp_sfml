@@ -20,17 +20,21 @@ class Buttons : public sf::Drawable, public sf::Transformable
 	unsigned int face_offset = 0;
 	unsigned int debug_offset = 0;
 	unsigned int test_offset = 0;
+	int bombs;
 	//std::vector<std::vector<Tile>> *tilesptr;
 
 public:
 	bool load(const std::string& tileset);
 	void changeTile(int x, int y, Tilename tile);
 	LeftClickAction processLeftClick(int ypos, int xpos);
+	void Update_bombs(int n_bombs);
 
-	Buttons(unsigned int width, unsigned int _height_offset)
+
+	Buttons(unsigned int width, unsigned int _height_offset, int bombs)
 	{
 		this->width = width;
 		height_offset = _height_offset;
+		this-> bombs = bombs;
 	}
 
 private:

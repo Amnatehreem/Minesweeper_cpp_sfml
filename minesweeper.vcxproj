@@ -124,7 +124,6 @@
   <ItemGroup>
     <ClInclude Include="Board.h" />
     <ClInclude Include="Buttons.h" />
-    <ClInclude Include="minemap.hpp" />
     <ClInclude Include="Tile.hpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

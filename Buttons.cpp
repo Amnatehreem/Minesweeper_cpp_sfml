@@ -40,22 +40,18 @@ bool Buttons::load(const std::string& tileset)
 
 		// define its 4 corners
 		// offset of digits from left side is 32 (after one game block). width of each digit is 21 and height of each digit is 32
-		
+
 		quad[0].position = sf::Vector2f(i * DIGIT_TILE_WIDTH + LEFT_OFFSET, height_offset);
 		quad[1].position = sf::Vector2f((i + 1) * DIGIT_TILE_WIDTH + LEFT_OFFSET, height_offset);
 		quad[2].position = sf::Vector2f((i + 1) * DIGIT_TILE_WIDTH + LEFT_OFFSET, DIGIT_TILE_HEIGHT + height_offset);
 		quad[3].position = sf::Vector2f(i * DIGIT_TILE_WIDTH + LEFT_OFFSET, DIGIT_TILE_HEIGHT + height_offset);
-
-		// define its 4 texture coordinates
-		quad[0].texCoords = sf::Vector2f(DIGIT_TILE_OFFSET + 0*DIGIT_TILE_WIDTH, 16);
-		quad[1].texCoords = sf::Vector2f(DIGIT_TILE_OFFSET + DIGIT_TILE_WIDTH*(0 + 1), 16);
-		quad[2].texCoords = sf::Vector2f(DIGIT_TILE_OFFSET + DIGIT_TILE_WIDTH*(0 + 1), DIGIT_TILE_HEIGHT + 16);
-		quad[3].texCoords = sf::Vector2f(DIGIT_TILE_OFFSET + 0*DIGIT_TILE_WIDTH, DIGIT_TILE_HEIGHT + 16);
 	}
+
+	Update_bombs(bombs);
 
 	// Fill the postion and texture coordinates for face
 	quad = &m_vertices[12];
-	face_offset = (((width - 1) * 32) / 2)/32;
+	face_offset = (((width - 1) * 32) / 2) / 32;
 	face_offset *= 32;
 	quad[0].position = sf::Vector2f(face_offset, height_offset);
 	quad[1].position = sf::Vector2f(face_offset + BIGTILE_SIZE, height_offset);
@@ -117,7 +113,7 @@ void  Buttons::draw(sf::RenderTarget& target, sf::RenderStates states) const
 	target.draw(m_vertices, states);
 }
 
-// Process left click: reveal a tile. reveal neighboring tiles that are not bombs
+// This function will find out which button is clicked and return the appropriate action to take. The action will be taken in main.cpp where this function will return
 LeftClickAction Buttons::processLeftClick(int ypos, int xpos)
 {
 	try
@@ -126,16 +122,22 @@ LeftClickAction Buttons::processLeftClick(int ypos, int xpos)
 		x = xpos / 32;
 		y = ypos;
 
+		// Only buttons from face and after that will perform action when clicked
 		if ((x >= height_offset / 32) && y >= face_offset)
 		{
+			// check if face button is clicked
 			if (y >= face_offset && y < face_offset + 64)
 			{
 				return LeftClickAction::ResetGame;
 			}
+
+			// check if debug button is pressed
 			else if (y >= debug_offset && y < debug_offset + 64)
 			{
 				return LeftClickAction::ToggleDebug;
 			}
+
+			// check if any of the test buttons is pressed
 			else if (y >= test_offset)
 			{
 				return (LeftClickAction)((y - test_offset) / 64);
@@ -152,17 +154,43 @@ LeftClickAction Buttons::processLeftClick(int ypos, int xpos)
 
 void Buttons::changeTile(int x, int y, Tilename tile)
 {
-	//// find its position in the tileset texture
-	//int tu = (int)tile % (m_tileset.getSize().x / tileSize.x);
-	//int tv = (int)tile / (m_tileset.getSize().x / tileSize.x);
 
-	//// get a pointer to the current tile's quad
-	//sf::Vertex* quad = &m_vertices[(y + x * width) * 4];
+}
 
-	//// define its 4 texture coordinates
-	//quad[0].texCoords = sf::Vector2f(tu * tileSize.x, tv * tileSize.y);
-	//quad[1].texCoords = sf::Vector2f((tu + 1) * tileSize.x, tv * tileSize.y);
-	//quad[2].texCoords = sf::Vector2f((tu + 1) * tileSize.x, (tv + 1) * tileSize.y);
-	//quad[3].texCoords = sf::Vector2f(tu * tileSize.x, (tv + 1) * tileSize.y);
+// This button will update the number of bombs displayed in the lower left corner
+void Buttons::Update_bombs(int n_bombs)
+{
+	bombs = n_bombs;
+	string bombstr = to_string(bombs);
+	string str;
+
+	// we need to fill 3 digits so if the digit lenght is 1, we will add 2 zeros before it and if it is 2 then we will add one zero. if the number is sigle digit and negative then we will add one zero after '-'
+	if (bombstr.length() == 1)
+	{
+		str = "00" + bombstr;
+	}
+	else if (bombstr.length() == 2)
+	{
+		if (bombstr[0] == '-')
+			str = "-0" + bombstr[1];
+		else
+			str = "0" + bombstr;
+	}
+	else
+		str = bombstr;
+
+	sf::Vertex* quad;
+	for (int i = 0; i < 3; i++)
+	{
+		int number = str[i] == '-' ? 10 : str[i] - '0';
+		quad = &m_vertices[i * 4];
+
+		// define its 4 texture coordinates
+		quad[0].texCoords = sf::Vector2f(DIGIT_TILE_OFFSET + number * DIGIT_TILE_WIDTH, 16);
+		quad[1].texCoords = sf::Vector2f(DIGIT_TILE_OFFSET + (number + 1) * DIGIT_TILE_WIDTH, 16);
+		quad[2].texCoords = sf::Vector2f(DIGIT_TILE_OFFSET + (number + 1) * DIGIT_TILE_WIDTH, DIGIT_TILE_HEIGHT + 16);
+		quad[3].texCoords = sf::Vector2f(DIGIT_TILE_OFFSET + number * DIGIT_TILE_WIDTH, DIGIT_TILE_HEIGHT + 16);
+	}
+	
 }
 

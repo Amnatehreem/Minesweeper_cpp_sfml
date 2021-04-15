@@ -14,7 +14,6 @@ void loadTest(string filename, vector<int> &bombs);
 
 int main()
 {
-
 	unsigned int width, height, bombs;
 	readConfig(width, height, bombs);
 
@@ -26,12 +25,12 @@ int main()
 	map.Generate();
 	vector<vector<Tile>>* tilesptr = map.getTileMap();
 
-	Board board(sf::Vector2u(TILESIZE, TILESIZE), width, height, tilesptr);
-	if (!board.load("images/m_merged.png"))
+	Buttons buttons(width, height * TILESIZE, bombs);
+	if (!buttons.load("images/m_merged.png"))
 		return -1;
 
-	Buttons buttons(width, height * TILESIZE);
-	if (!buttons.load("images/m_merged.png"))
+	Board board(sf::Vector2u(TILESIZE, TILESIZE), width, height, tilesptr, buttons);
+	if (!board.load("images/m_merged.png"))
 		return -1;
 
 	// run the main loop
@@ -55,6 +54,10 @@ int main()
 					board.processLeftClick(event.mouseButton.x, event.mouseButton.y);
 					LeftClickAction action = buttons.processLeftClick(event.mouseButton.x, event.mouseButton.y);
 
+					string str = action == LeftClickAction::LoadTest1 ? "testboard1.brd" : "";
+					str = action == LeftClickAction::LoadTest2 ? "testboard2.brd" : str;
+					str = action == LeftClickAction::LoadTest3 ? "testboard3.brd" : str;
+
 					if (action != LeftClickAction::NoAction)
 					{
 						switch (action)
@@ -72,39 +75,29 @@ int main()
 
 						}
 						case LeftClickAction::LoadTest1:
-						{
-							board.Reset();
-							vector<int> bombs;
-							loadTest("testboard1.brd", bombs);
-							map.Generate(&bombs);
-							break;
-
-						}
 						case LeftClickAction::LoadTest2:
-						{
-							board.Reset();
-							vector<int> bombs;
-							loadTest("testboard2.brd", bombs);
-							map.Generate(&bombs);
-							break;
-
-						}
 						case LeftClickAction::LoadTest3:
 						{
+							if (width != 25 || height != 16)
+							{
+								cout << "Please enter width = 25 and height = 16 in config file for test buttons to work" << endl;
+								break;
+							}
 							board.Reset();
-							vector<int> bombs;
-							loadTest("testboard3.brd", bombs);
-							map.Generate(&bombs);
+							vector<int> _bombs;
+							loadTest(str, _bombs);
+							bombs = _bombs.size();
+							map.Generate(&_bombs);
+							buttons.Update_bombs(bombs);
 
 							break;
 						}
-						}
+						}// end switch case
+					} 
 
-					}
-
-				}
-			}
-		}
+				}// end left click processing
+			} // end mouse clicked processing
+		} // end while
 
 		// draw the board
 		window.clear(sf::Color(255, 255, 255));

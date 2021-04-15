@@ -43,11 +43,12 @@ public:
 
  class TileMap
  {
-	 int width, height, n_bombs;
+	 int width, height;
 	 std::vector<std::vector<Tile>> *tilesptr;
 	 Tilename bombsAround(int i, int j);
 
  public:
+	 int  n_bombs;
 	 TileMap(int width, int height, int n_bombs)
 	 {
 		 this->height = height;
