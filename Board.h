@@ -1,6 +1,7 @@
 #pragma once
 #include <string>
 #include "Tile.hpp"
+#include "Buttons.h"
 
 class Board : public sf::Drawable, public sf::Transformable
 {
@@ -11,6 +12,7 @@ class Board : public sf::Drawable, public sf::Transformable
 	sf::Vector2u tileSize;
 	std::vector<std::vector<Tile>> *tilesptr;
 	bool debugmode = false;
+	Buttons *buttons;
 
 public:
 	bool load(const std::string& tileset);
@@ -20,13 +22,14 @@ public:
 	void Reset();
 	void ToggleDebugMode();
 
-	Board(sf::Vector2u tSize, unsigned int width, unsigned int height, std::vector<std::vector<Tile>> *tilesptr, Buttons &buttons)
+	Board(sf::Vector2u tSize, unsigned int width, unsigned int height, std::vector<std::vector<Tile>> *tilesptr, Buttons *buttons)
 	{
 		this->width = width;
 		this->height = height;
 		tileSize.x = tSize.x;
 		tileSize.y = tSize.y;
 		this->tilesptr = tilesptr;
+		this->buttons = buttons;
 
 	}
 

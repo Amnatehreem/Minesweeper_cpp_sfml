@@ -152,16 +152,19 @@ LeftClickAction Buttons::processLeftClick(int ypos, int xpos)
 	return LeftClickAction::NoAction;
 }
 
-void Buttons::changeTile(int x, int y, Tilename tile)
+void Buttons::reset(int n_bombs)
 {
-
+	bombs = n_bombs;
+	Update_bombs(bombs);
 }
 
 // This button will update the number of bombs displayed in the lower left corner
 void Buttons::Update_bombs(int n_bombs)
 {
 	bombs = n_bombs;
-	string bombstr = to_string(bombs);
+	if (n_bombs < -99)
+		n_bombs = -99;
+	string bombstr = to_string(n_bombs);
 	string str;
 
 	// we need to fill 3 digits so if the digit lenght is 1, we will add 2 zeros before it and if it is 2 then we will add one zero. if the number is sigle digit and negative then we will add one zero after '-'
@@ -172,7 +175,7 @@ void Buttons::Update_bombs(int n_bombs)
 	else if (bombstr.length() == 2)
 	{
 		if (bombstr[0] == '-')
-			str = "-0" + bombstr[1];
+			str = "-0" + bombstr.substr(1);
 		else
 			str = "0" + bombstr;
 	}
@@ -191,6 +194,15 @@ void Buttons::Update_bombs(int n_bombs)
 		quad[2].texCoords = sf::Vector2f(DIGIT_TILE_OFFSET + (number + 1) * DIGIT_TILE_WIDTH, DIGIT_TILE_HEIGHT + 16);
 		quad[3].texCoords = sf::Vector2f(DIGIT_TILE_OFFSET + number * DIGIT_TILE_WIDTH, DIGIT_TILE_HEIGHT + 16);
 	}
-	
+}
+
+void Buttons::increment_bombs()
+{
+	Update_bombs(++bombs);
+}
+
+void Buttons::decrement_bombs()
+{
+	Update_bombs(--bombs);
 }
 

@@ -27,8 +27,10 @@ public:
 	bool load(const std::string& tileset);
 	void changeTile(int x, int y, Tilename tile);
 	LeftClickAction processLeftClick(int ypos, int xpos);
+	void increment_bombs();
+	void decrement_bombs();
 	void Update_bombs(int n_bombs);
-
+	void reset(int bombs);
 
 	Buttons(unsigned int width, unsigned int _height_offset, int bombs)
 	{
@@ -38,6 +40,7 @@ public:
 	}
 
 private:
+
 	virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const;
 
 };

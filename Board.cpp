@@ -156,11 +156,13 @@ void Board::processRightClick(int ypos, int xpos)
 		{
 			tiles[x][y].state = TileState::flagged;
 			changeTile(x, y, Tilename::flag);
+			buttons->decrement_bombs();
 		}
 		else if (tiles[x][y].state == TileState::flagged)
 		{
 			tiles[x][y].state = TileState::hidden;
 			changeTile(x, y, Tilename::hidden);
+			buttons->increment_bombs();
 		}
 	}
 	catch (exception & ex)

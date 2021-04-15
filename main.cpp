@@ -29,7 +29,7 @@ int main()
 	if (!buttons.load("images/m_merged.png"))
 		return -1;
 
-	Board board(sf::Vector2u(TILESIZE, TILESIZE), width, height, tilesptr, buttons);
+	Board board(sf::Vector2u(TILESIZE, TILESIZE), width, height, tilesptr, &buttons);
 	if (!board.load("images/m_merged.png"))
 		return -1;
 
@@ -66,6 +66,7 @@ int main()
 						{
 							board.Reset();
 							map.Generate();
+							buttons.reset(bombs);
 							break;
 						}
 						case LeftClickAction::ToggleDebug:
@@ -86,9 +87,9 @@ int main()
 							board.Reset();
 							vector<int> _bombs;
 							loadTest(str, _bombs);
-							bombs = _bombs.size();
+							//bombs = _bombs.size();
 							map.Generate(&_bombs);
-							buttons.Update_bombs(bombs);
+							buttons.Update_bombs(_bombs.size());
 
 							break;
 						}
