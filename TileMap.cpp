@@ -1,5 +1,6 @@
 #include "Tile.hpp"
 #include <iostream>
+#include <ctime>
 using namespace std;
 
 #define tiles  (*tilesptr)
@@ -7,7 +8,7 @@ using namespace std;
 // This function calculates m unique random numbers from 0 to n
 void getrand(int m, int n, vector<int> &randNum)
 {
-	//srand(3);
+
 	int *arr = new int[n];
 	for (int i = 0; i < n; ++i)
 		arr[i] = i;

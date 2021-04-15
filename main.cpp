@@ -6,6 +6,8 @@
 #include "Board.h"
 #include "Tile.hpp"
 #include "Buttons.h"
+#include <ctime>
+
 #define TILESIZE 32
 
 using namespace std;
@@ -14,6 +16,8 @@ void loadTest(string filename, vector<int> &bombs);
 
 int main()
 {
+	srand((unsigned)time(0));
+
 	unsigned int width, height, bombs;
 	readConfig(width, height, bombs);
 

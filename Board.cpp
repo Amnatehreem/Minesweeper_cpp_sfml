@@ -86,6 +86,8 @@ void Board::processLeftClick(int ypos, int xpos)
 		if (tiles[x][y].tile == Tilename::bomb)
 		{
 			buttons->setFace(false);
+			debugmode = false;
+			ToggleDebugMode();
 			playing = false;
 		}
 
@@ -93,7 +95,10 @@ void Board::processLeftClick(int ypos, int xpos)
 		if (revealed_tiles == non_bomb_tiles)
 		{
 			buttons->setFace(true);
+			debugmode = true;
+			ToggleDebugMode();
 			playing = false;
+			flagRemainingTiles();
 		}
 	}
 	catch (exception &ex)
@@ -202,6 +207,8 @@ void Board::processRightClick(int ypos, int xpos)
 
 void Board::ToggleDebugMode()
 {
+	if (!playing)
+		return;
 	debugmode = debugmode ? false : true;
 
 	// if bombs are hidden, reveal them and if revealed then hide them
@@ -224,6 +231,22 @@ void Board::ToggleDebugMode()
 				{
 					hideTile(i, j);
 				}
+			}
+		}
+	}
+}
+
+void Board::flagRemainingTiles()
+{
+	for (unsigned int i = 0; i < height; ++i)
+	{
+		for (unsigned int j = 0; j < width; ++j)
+		{
+			if (tiles[i][j].state != TileState::revealed)
+			{
+				tiles[i][j].state = TileState::flagged;
+				changeTile(i, j, Tilename::flag);
+				buttons->decrement_bombs();
 			}
 		}
 	}

@@ -40,4 +40,5 @@ private:
 	void revealTile(int x, int y);
 	void hideTile(int x, int y);
 	void revealiteratively(int x, int y);
+	void flagRemainingTiles();
 };
